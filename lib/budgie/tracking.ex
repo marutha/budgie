@@ -59,7 +59,7 @@ defmodule Budgie.Tracking do
 
   def summarize_budget_transactions(budget_id) do
     query =
-      from t in transaction_query(budget_id: budget_id, order_by: nil),
+      from t in transaction_query(budget: budget_id, order_by: nil),
         select: [t.type, sum(t.amount)],
         group_by: t.type
 
@@ -75,7 +75,7 @@ defmodule Budgie.Tracking do
 
     Enum.reduce(criteria, query, fn
       {:budget, budget_id}, query ->
-        from b in query, where: b.budget_id == ^budget_id
+        from t in query, where: t.budget_id == ^budget_id
 
       {:order_by, binding}, query ->
         from t in exclude(query, :order_by), order_by: ^binding
