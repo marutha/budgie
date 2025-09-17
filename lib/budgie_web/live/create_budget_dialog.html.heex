@@ -1,0 +1,47 @@
+<div>
+  <div class="p-6 pb-0">
+    <h2 class="text-2xl font-bold text-grey-900">New Budget</h2>
+  </div>
+
+  <.form
+    for={@form}
+    class="p-6 space-y-6"
+    phx-target={@myself}
+    phx-change="validate"
+    phx-submit="save"
+  >
+    <div class="space-y-4">
+      <.input
+        field={@form[:name]}
+        label="Budget Name"
+        placeholder="Enter the name of the budget"
+        autofocus
+        required
+      />
+      <.input
+        field={@form[:description]}
+        label="Budget Description"
+        placeholder="Enter the description of the budget"
+        autofocus
+        required
+      />
+
+      <div class="space-y-4">
+        <h2 class="text-lg font-semibold">Budget Period</h2>
+        <div class="grid grid-cols-2 gap-4">
+          <.input field={@form[:start_date]} label="Start Date" type="date" />
+          <.input field={@form[:end_date]} label="End Date" type="date" />
+        </div>
+      </div>
+
+      <div class="pt-4 bg-blue">
+        <button
+          type="submit"
+          class="bg-blue border-blue border-2 border-solid text-black py-3 px-4 rounded-lg"
+        >
+          Create Budget
+        </button>
+      </div>
+    </div>
+  </.form>
+</div>

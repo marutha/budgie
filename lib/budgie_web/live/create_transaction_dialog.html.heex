@@ -1,0 +1,49 @@
+<div>
+  <div class="p-6 pb-0">
+    <h2 class="text-2xl font-bold text-grey-900">New Transaction</h2>
+  </div>
+
+  <.form
+    for={@form}
+    class="p-6 space-y-6"
+    phx-target={@myself}
+    phx-change="validate"
+    phx-submit="save"
+  >
+    <div class="space-y-4">
+      <.input
+        field={@form[:type]}
+        label="Transaction Type"
+        type="select"
+        options={[Spending: "spending", Funding: "funding"]}
+      />
+      <.input
+        field={@form[:description]}
+        label="Description"
+        type="text"
+      />
+      <.input
+        field={@form[:amount]}
+        label="Transaction Amount"
+        type="number"
+        step="0.01"
+      />
+
+      <div class="space-y-4">
+        <h2 class="text-lg font-semibold">Transaction Date</h2>
+        <div class="grid grid-cols-2 gap-4">
+          <.input field={@form[:effective_date]} label="Effective Date" type="date" />
+        </div>
+      </div>
+
+      <div class="pt-4 bg-blue">
+        <button
+          type="submit"
+          class="bg-blue border-blue border-2 border-solid text-black py-3 px-4 rounded-lg"
+        >
+          Create Budget
+        </button>
+      </div>
+    </div>
+  </.form>
+</div>

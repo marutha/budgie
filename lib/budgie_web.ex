@@ -51,7 +51,7 @@ defmodule BudgieWeb do
   def live_view do
     quote do
       use Phoenix.LiveView
-
+      import Budgie.Utils.UUIDGuard
       unquote(html_helpers())
     end
   end
