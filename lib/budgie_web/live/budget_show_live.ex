@@ -68,10 +68,23 @@ defmodule BudgieWeb.BudgetShowLive do
     <div class="flex justify-center">
       {@budget.name} by {@budget.creator.name}
     </div>
-    <div class="flex justify-between p-6">
-      <div class="text-xl">Funding: <.currency amount={@summary.funding} /></div>
-      <div class="text-xl">Spending: <.currency class="" amount={@summary.spending} /></div>
-      <div class="flex justify-end m-10">
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div class="space-y-2">
+        <div class="flex items-center px-2 space-x-2">
+          <.icon name="hero-wallet space-x-2" class="w-4 h-4 text-gray-400" />
+          <span class="text-sm font-medium text-gray-500">Current Balance</span>
+        </div>
+        <.currency
+          amount={Decimal.sub(@summary.funding, @summary.spending)}
+          class="text-2xl px-2 font-bold"
+        />
+        <div class="flex justify-between">
+          <div class="text-xl px-2">Funding: <.currency amount={@summary.funding} /></div>
+          <div class="text-xl px-2">Spending: <.currency class="" amount={@summary.spending} /></div>
+        </div>
+      </div>
+      <div class="flex justify-end items-center p-4">
         <.link
           navigate={~p"/budgets/#{@budget}/new-transaction"}
           class="bg-gray-100 text-gray-700"
@@ -81,6 +94,7 @@ defmodule BudgieWeb.BudgetShowLive do
         </.link>
       </div>
     </div>
+    <div class="flex justify-between p-6"></div>
 
     <.table id="transactions" rows={@transactions}>
       <:col :let={transaction} label="Description">{transaction.description}</:col>
