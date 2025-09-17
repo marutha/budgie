@@ -72,5 +72,14 @@
   <:col :let={transaction} label="Amount"><.transaction_amount transaction={transaction} /></:col>
   <:col :let={transaction} label="Actions">
     <.link navigate={~p"/budgets/#{@budget}/transactions/#{transaction.id}/edit"}> Edit</.link>
+    <button
+      type="button"
+      class="ml-2 text-red-400"
+      phx-click="delete_transaction"
+      phx-value-id={transaction.id}
+      data-confirm="Are you sure you want to delete?"
+    >
+      Delete
+    </button>
   </:col>
 </.table>

@@ -75,6 +75,31 @@ defmodule BudgieWeb.BudgetShowLive do
     {:noreply, socket}
   end
 
+  def handle_event("delete_transaction", %{"id" => transaction_id}, socket) do
+    transaction = Enum.find(socket.assigns.transactions, &(&1.id == transaction_id))
+
+    socket =
+      if transaction do
+        case Tracking.delete_transaction(transaction) do
+          {:ok, _t} ->
+            socket
+            |> put_flash(:info, "Deleted sucessfully")
+            |> redirect(to: ~p"/budgets/#{socket.assigns.budget}")
+
+          _ ->
+            socket
+            |> put_flash(:info, "Deleted sucessfully")
+            |> redirect(to: ~p"/budgets/#{socket.assigns.budget}")
+        end
+      else
+        socket
+        |> put_flash(:info, "Deleted sucessfully")
+        |> redirect(to: ~p"/budgets/#{socket.assigns.budget}")
+      end
+
+    {:noreply, socket}
+  end
+
   @doc """
     This is the documentation for component function
   """
