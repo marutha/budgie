@@ -1,12 +1,11 @@
-defmodule BudgieWeb.CreateTransactionDialog do
+defmodule BudgieWeb.TransactionDialog do
   use BudgieWeb, :live_component
 
   alias Budgie.Tracking
-  alias Budgie.Tracking.BudgetTransaction
 
   @impl true
   def update(assigns, socket) do
-    changeset = Tracking.change_transaction(default_transaction(), %{})
+    changeset = Tracking.change_transaction(assigns.transaction, %{})
 
     socket =
       socket
@@ -19,7 +18,7 @@ defmodule BudgieWeb.CreateTransactionDialog do
   @impl true
   def handle_event("validate", %{"transaction" => params}, socket) do
     changeset =
-      default_transaction()
+      socket.assigns.transaction
       |> Tracking.change_transaction(params)
       |> Map.put(:action, :validate)
 
@@ -28,14 +27,20 @@ defmodule BudgieWeb.CreateTransactionDialog do
 
   @impl true
   def handle_event("save", %{"transaction" => tx_params}, socket) do
+    save_transaction(socket, socket.assigns.action, tx_params)
+  end
+
+  defp assign_form(socket, changeset) do
+    assign(socket, form: to_form(changeset, as: "transaction"))
+  end
+
+  defp save_transaction(socket, :new_transaction, tx_params) do
     budget = socket.assigns.budget
 
     tx_params = Map.put(tx_params, "budget_id", budget.id)
 
     case Tracking.create_transaction(tx_params) do
-      {:ok, transaction} ->
-        IO.inspect(transaction, label: "created sucessfully")
-
+      {:ok, _transaction} ->
         socket =
           socket
           |> push_navigate(to: ~p"/budgets/#{budget}", replace: true)
@@ -43,17 +48,27 @@ defmodule BudgieWeb.CreateTransactionDialog do
         {:noreply, socket}
 
       {:error, changeset} ->
-        IO.inspect(changeset, label: "created sucessfully")
         changeset = Map.put(changeset, :action, :validate)
         {:noreply, socket |> assign_form(changeset)}
     end
   end
 
-  defp assign_form(socket, changeset) do
-    assign(socket, form: to_form(changeset, as: "transaction"))
-  end
+  defp save_transaction(socket, :edit_transaction, tx_params) do
+    budget = socket.assigns.budget
 
-  defp default_transaction() do
-    %BudgetTransaction{effective_date: Date.utc_today()}
+    tx_params = Map.put(tx_params, "budget_id", budget.id)
+
+    case Tracking.update_transaction(socket.assigns.transaction, tx_params) do
+      {:ok, _transaction} ->
+        socket =
+          socket
+          |> push_navigate(to: ~p"/budgets/#{budget}", replace: true)
+
+        {:noreply, socket}
+
+      {:error, changeset} ->
+        changeset = Map.put(changeset, :action, :validate)
+        {:noreply, socket |> assign_form(changeset)}
+    end
   end
 end

@@ -25,4 +25,22 @@ defmodule Budgie.TrackingFixtures do
       user.id
     end)
   end
+
+  def valid_budget_transaction_fixture(attrs \\ %{}) do
+    attrs
+    |> maybe_add_budget()
+    |> Enum.into(%{
+      effective_date: ~D[2025-09-10],
+      description: "Some description",
+      amount: Decimal.new("23.23"),
+      type: :spending
+    })
+  end
+
+  def maybe_add_budget(attrs) when is_map(attrs) do
+    Map.put_new_lazy(attrs, :budget_id, fn ->
+      budget = budget_fixuture()
+      budget.id
+    end)
+  end
 end

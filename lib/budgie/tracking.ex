@@ -33,6 +33,12 @@ defmodule Budgie.Tracking do
     |> Repo.insert()
   end
 
+  def update_transaction(transaction, attrs) do
+    transaction
+    |> BudgetTransaction.changeset(attrs)
+    |> Repo.update()
+  end
+
   def list_transactions(budget_or_budget_id, criteria \\ [])
 
   def list_transactions(%Budget{id: budget_id}, criteria),
@@ -43,8 +49,8 @@ defmodule Budgie.Tracking do
     |> Repo.all()
   end
 
-  def change_transaction(budget, attrs) do
-    BudgetTransaction.changeset(budget, attrs)
+  def change_transaction(transaction, attrs) do
+    BudgetTransaction.changeset(transaction, attrs)
   end
 
   def summarize_budget_transactions(%Budget{id: budget_id}) do

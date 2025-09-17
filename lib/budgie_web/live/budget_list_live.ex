@@ -10,6 +10,14 @@ defmodule BudgieWeb.BudgetListLive do
   end
 
   @impl true
+  def handle_event("/budgets", _unsigned_params, socket) do
+    socket =
+      socket |> redirect(to: "/budgets")
+
+    {:noreply, socket}
+  end
+
+  @impl true
   def handle_params(_unsigned_params, _uri, socket) do
     {:noreply, socket}
   end
@@ -19,8 +27,8 @@ defmodule BudgieWeb.BudgetListLive do
     ~H"""
     <dialog
       open={@live_action == :new}
-      closedby={@live_action != :new}
-      class="modal"
+      closedby={@live_action == nil}
+      class="modal border-blue border-solid border-2"
       phx-mounted={
         JS.ignore_attributes("open")
         |> JS.transition({"ease-in duration-200", "opacity-0", "opacity-100"}, time: 0)
@@ -35,6 +43,15 @@ defmodule BudgieWeb.BudgetListLive do
         phx-key="escape"
         class="modal-box w-11/12 max-w-2xl"
       >
+        <div class="flex justify-end">
+          <button
+            type="button"
+            class="btn btn-sm btn-circle btn-ghost"
+            phx-click={JS.push(~p"/budgets")}
+          >
+            ✕
+          </button>
+        </div>
         <.live_component
           module={BudgieWeb.CreateBudgetDialog}
           id="create-budget"

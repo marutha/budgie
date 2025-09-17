@@ -4,7 +4,7 @@ defmodule BudgieWeb.BudgetShowLive do
   use BudgieWeb, :live_view
 
   @impl true
-  def mount(%{"budget_id" => id}, _session, socket) when is_uuid(id) do
+  def mount(%{"budget_id" => id} = params, _session, socket) when is_uuid(id) do
     budget =
       Tracking.get_budget(id,
         # user: socket.assigns.current_scope.user,
@@ -14,10 +14,19 @@ defmodule BudgieWeb.BudgetShowLive do
     if budget do
       transactions = Tracking.list_transactions(budget)
       summary = Tracking.summarize_budget_transactions(budget)
-      {:ok, assign(socket, budget: budget, transactions: transactions, summary: summary)}
+
+      {:ok,
+       assign(socket,
+         budget: budget,
+         transactions: transactions,
+         summary: summary,
+         transaction: default_transaction()
+       )
+       |> apply_action(params)}
     else
       socket =
         socket
+        |> assign(transaction: default_transaction())
         |> put_flash(:error, "Budget not found")
         |> redirect(to: ~p"/budgets")
 
@@ -35,73 +44,35 @@ defmodule BudgieWeb.BudgetShowLive do
     {:ok, socket}
   end
 
+  def apply_action(%{assigns: %{live_action: :edit_transaction}} = socket, %{
+        "transaction_id" => transaction_id
+      }) do
+    IO.inspect(transaction_id, label: :valid_tx)
+    transaction = Enum.find(socket.assigns.transactions, &(&1.id == transaction_id))
+
+    if transaction do
+      socket |> assign(transaction: transaction)
+    else
+      socket
+      |> put_flash(:error, "Transaction not found")
+      |> assign(transaction: default_transaction())
+      |> redirect(to: ~p"/budgets/#{socket.assigns.budget}")
+    end
+  end
+
+  def apply_action(%{assigns: %{live_action: live_action}} = socket, other) do
+    IO.inspect(other, label: :other_action)
+    IO.inspect(live_action, label: :other_live_action)
+    socket
+  end
+
   @impl true
-  def render(assigns) do
-    ~H"""
-    <dialog
-      open={@live_action == :new_transaction}
-      closedby={@live_action != :new_transaction}
-      id="create-transactional-modal"
-      class="modal"
-      phx-mounted={
-        JS.ignore_attributes("open")
-        |> JS.transition({"ease-in duration-200", "opacity-0", "opacity-100"}, time: 0)
-      }
-      phx-remove={
-        JS.remove_attribute("open")
-        |> JS.transition({"ease-out duration-200", "opacity-100", "opacity-0"}, time: 0)
-      }
-    >
-      <.focus_wrap
-        id="container"
-        phx-key="escape"
-        class="modal-box w-11/12 max-w-2xl"
-      >
-        <.live_component
-          module={BudgieWeb.CreateTransactionDialog}
-          id="create-transaction"
-          budget={@budget}
-          return_to={~p"/budgets/#{@budget}"}
-        />
-      </.focus_wrap>
-    </dialog>
-    <div class="flex justify-center">
-      {@budget.name} by {@budget.creator.name}
-    </div>
+  def handle_event("/budgets/" <> budget_id, _uri, socket) do
+    socket =
+      socket
+      |> redirect(to: "/budgets/" <> budget_id)
 
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-      <div class="space-y-2">
-        <div class="flex items-center px-2 space-x-2">
-          <.icon name="hero-wallet space-x-2" class="w-4 h-4 text-gray-400" />
-          <span class="text-sm font-medium text-gray-500">Current Balance</span>
-        </div>
-        <.currency
-          amount={Decimal.sub(@summary.funding, @summary.spending)}
-          class="text-2xl px-2 font-bold"
-        />
-        <div class="flex justify-between">
-          <div class="text-xl px-2">Funding: <.currency amount={@summary.funding} /></div>
-          <div class="text-xl px-2">Spending: <.currency class="" amount={@summary.spending} /></div>
-        </div>
-      </div>
-      <div class="flex justify-end items-center p-4">
-        <.link
-          navigate={~p"/budgets/#{@budget}/new-transaction"}
-          class="bg-gray-100 text-gray-700"
-        >
-          <.icon name="hero-plus" class="h-4 w-4" />
-          <span>New Transaction</span>
-        </.link>
-      </div>
-    </div>
-    <div class="flex justify-between p-6"></div>
-
-    <.table id="transactions" rows={@transactions}>
-      <:col :let={transaction} label="Description">{transaction.description}</:col>
-      <:col :let={transaction} label="Date">{transaction.effective_date}</:col>
-      <:col :let={transaction} label="Amount"><.transaction_amount transaction={transaction} /></:col>
-    </.table>
-    """
+    {:noreply, socket}
   end
 
   @doc """
@@ -131,5 +102,9 @@ defmodule BudgieWeb.BudgetShowLive do
       {Decimal.round(@amount, 2)}
     </span>
     """
+  end
+
+  defp default_transaction() do
+    %BudgetTransaction{effective_date: Date.utc_today()}
   end
 end
