@@ -6,7 +6,7 @@ defmodule Budgie.TrackingFixtures do
       name: "A test budgie",
       description: "A short description",
       start_date: ~D[2024-01-01],
-      end_date: ~D[2025-09-10]
+      end_date: ~D[2025-09-30]
     })
   end
 

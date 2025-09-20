@@ -39,25 +39,28 @@
   {@budget.name} by {@budget.creator.name}
 </div>
 
-<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div class="grid grid-cols-2 gap-6">
   <div class="space-y-2">
     <div class="flex items-center px-2 space-x-2">
       <.icon name="hero-wallet space-x-2" class="w-4 h-4 text-gray-400" />
       <span class="text-sm font-medium text-gray-500">Current Balance</span>
-    </div>
-    <.currency
-      amount={Decimal.sub(@summary.funding, @summary.spending)}
-      class="text-2xl px-2 font-bold"
-    />
-    <div class="flex justify-between">
-      <div class="text-xl px-2">Funding: <.currency amount={@summary.funding} /></div>
-      <div class="text-xl px-2">Spending: <.currency class="" amount={@summary.spending} /></div>
+      <.currency
+        amount={Decimal.sub(@summary.funding, @summary.spending)}
+        class="text-4xl px-2 font-bold"
+      />
     </div>
   </div>
-  <div class="flex justify-end items-center p-4">
+  <div class="flex justify-end items-center p-4"></div>
+</div>
+<div class="flex justify-between">
+  <div class="text-xl px-2">Funding: <.currency amount={@summary.funding} /></div>
+  <div class="text-xl px-2">
+    Spending: <.currency class="" amount={@summary.spending} />
+  </div>
+  <div>
     <.link
       navigate={~p"/budgets/#{@budget}/new-transaction"}
-      class="bg-gray-100 text-gray-700"
+      class="justify-end bg-gray-100 text-gray-700"
     >
       <.icon name="hero-plus" class="h-4 w-4" />
       <span>New Transaction</span>
@@ -66,6 +69,16 @@
 </div>
 <div class="flex justify-between p-6"></div>
 
+<div class="grid grid-cols-1 gap-4 mt-6">
+  <div
+    :for={period <- @budget.periods}
+    class="bg-white rounded shadow-sm p-4 cursor:pointer hover:shadow-md transition-shadow"
+  >
+    <div class="flex justify-between items-center mb-3">
+      <h3 class="font-medium text-gray-900">{period.start_date}</h3>
+    </div>
+  </div>
+</div>
 <.table id="transactions" rows={@transactions}>
   <:col :let={transaction} label="Description">{transaction.description}</:col>
   <:col :let={transaction} label="Date">{transaction.effective_date}</:col>

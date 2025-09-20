@@ -45,7 +45,7 @@ defmodule Budgie.TrackingTest do
         )
 
       assert {:error, %Ecto.Changeset{} = changeset} = Budgie.Repo.insert(invalid_attrs)
-      assert %{end_date: ["Must end after start date"]} = errors_on(changeset)
+      assert %{end_date: ["Must be end of the month"]} = errors_on(changeset)
     end
 
     test "List budgets returns all budgets" do

@@ -58,7 +58,13 @@ defmodule Budgie.Tracking do
   end
 
   def summarize_budget_transactions(%Budget{id: budget_id}) do
-    summarize_budget_transactions(budget_id)
+    case summarize_budget_transactions(budget_id) do
+      %{} ->
+        %{funding: Decimal.new("0.0"), spending: Decimal.new("0.0")}
+
+      other ->
+        other
+    end
   end
 
   def summarize_budget_transactions(budget_id) do

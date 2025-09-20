@@ -23,8 +23,16 @@ defmodule Budgie.Factory do
       name: sequence(:budget, &"Budget #{&1}"),
       description: sequence(:budget_description, &"Budget Description #{&1}"),
       start_date: ~D[2025-09-01],
-      end_date: ~D[2025-09-11],
+      end_date: ~D[2025-09-30],
       creator: build(:user)
+    }
+  end
+
+  def budget_period_factory() do
+    %Tracking.BudgetPeriod{
+      start_date: ~D[2025-09-01],
+      end_date: ~D[2025-09-30],
+      budget: build(:budget)
     }
   end
 
