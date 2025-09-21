@@ -14,7 +14,8 @@ defmodule BudgieWeb.BudgetShowLive do
     if budget do
       transactions = Tracking.list_transactions(budget)
       summary = Tracking.summarize_budget_transactions(budget)
-
+      summary = %{spending: Map.get(summary, :spending, Decimal.new("0.0")),
+                 funding: Map.get(summary, :funding, Decimal.new("0.0"))}
       {:ok,
        assign(socket,
          budget: budget,
