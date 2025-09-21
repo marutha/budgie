@@ -7,7 +7,6 @@ defmodule Budgie.AccountsFixtures do
   import Ecto.Query
 
   alias Budgie.Accounts
-  alias Budgie.Accounts.Scope
 
   def unique_user_name, do: "user#{System.unique_integer()}"
   def unique_user_email, do: "user#{System.unique_integer()}@example.com"
@@ -41,15 +40,6 @@ defmodule Budgie.AccountsFixtures do
       Accounts.login_user_by_magic_link(token)
 
     user
-  end
-
-  def user_scope_fixture do
-    user = user_fixture()
-    user_scope_fixture(user)
-  end
-
-  def user_scope_fixture(user) do
-    Scope.for_user(user)
   end
 
   def set_password(user) do

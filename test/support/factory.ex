@@ -45,4 +45,14 @@ defmodule Budgie.Factory do
       budget: build(:budget)
     }
   end
+
+  def budget_transaction_funding_factory() do
+    %Tracking.BudgetTransaction{
+      type: "funding",
+      amount: Decimal.new("23.23"),
+      description: sequence(:transaction_description, &"Transaction description #{&1}"),
+      effective_date: ~D[2025-09-01],
+      budget: build(:budget)
+    }
+  end
 end

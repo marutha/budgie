@@ -36,25 +36,26 @@ defmodule BudgieWeb.ConnCase do
     {:ok, conn: Phoenix.ConnTest.build_conn()}
   end
 
-  @doc """
-  Setup helper that registers and logs in users.
+  # @doc """
+  # Setup helper that registers and logs in users.
 
-      setup :register_and_log_in_user
+  #     setup :register_and_log_in_user
 
-  It stores an updated connection and a registered user in the
-  test context.
-  """
-  def register_and_log_in_user(%{conn: conn} = context) do
-    user = Budgie.AccountsFixtures.user_fixture()
-    scope = Budgie.Accounts.Scope.for_user(user)
+  # It stores an updated connection and a registered user in the
+  # test context.
+  # """
 
-    opts =
-      context
-      |> Map.take([:token_authenticated_at])
-      |> Enum.into([])
+  # def register_and_log_in_user(%{conn: conn} = context) do
+  #   user = Budgie.AccountsFixtures.user_fixture()
+  #   scope = Budgie.Accounts.Scope.for_user(user)
 
-    %{conn: log_in_user(conn, user, opts), user: user, scope: scope}
-  end
+  #   opts =
+  #     context
+  #     |> Map.take([:token_authenticated_at])
+  #     |> Enum.into([])
+
+  #   %{conn: log_in_user(conn, user, opts), user: user, scope: scope}
+  # end
 
   @doc """
   Logs the given `user` into the `conn`.

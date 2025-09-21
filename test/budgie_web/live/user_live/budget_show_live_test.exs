@@ -50,6 +50,46 @@ defmodule BudgieWeb.BudgetShowLiveTest do
                )
     end
 
+    test "Valid Budget transaction delete", %{conn: conn, user: user} do
+      budget_transaction = insert(:budget_transaction)
+      conn = log_in_user(conn, user)
+
+      assert {:ok, lv, _html} =
+               live(
+                 conn,
+                 ~p"/budgets/#{budget_transaction.budget_id}/transactions/#{budget_transaction.id}/edit"
+               )
+
+      render_hook(lv, "delete_transaction", %{"id" => budget_transaction.id})
+    end
+
+    test "InValid Budget transaction delete", %{conn: conn, user: user} do
+      budget_transaction = insert(:budget_transaction_funding)
+      conn = log_in_user(conn, user)
+
+      assert {:ok, lv, _html} =
+               live(
+                 conn,
+                 ~p"/budgets/#{budget_transaction.budget_id}/transactions/#{budget_transaction.id}/edit"
+               )
+
+      render_hook(lv, "delete_transaction", %{"id" => Ecto.UUID.generate()})
+    end
+
+    test "InValid Budget transaction redirect", %{conn: conn, user: user} do
+      budget_transaction = insert(:budget_transaction_funding)
+      conn = log_in_user(conn, user)
+
+      assert {:ok, lv, _html} =
+               live(
+                 conn,
+                 ~p"/budgets/#{budget_transaction.budget_id}/transactions/#{budget_transaction.id}/edit"
+               )
+
+      render_hook(lv, "/budgets/#{budget_transaction.budget_id}", %{})
+      assert_redirect(lv, ~p"/budgets/#{budget_transaction.budget_id}")
+    end
+
     test "Valid Budget invalid transaction edit", %{conn: conn, user: user} do
       budget_transaction = insert(:budget_transaction)
       conn = log_in_user(conn, user)
