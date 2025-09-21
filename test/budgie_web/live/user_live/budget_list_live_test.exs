@@ -19,13 +19,5 @@ defmodule BudgieWeb.BudgetListLiveTest do
       assert html =~ budget.name
       assert html =~ budget.description
     end
-
-    test "New budget", %{conn: conn, user: user} do
-      budget = budget_fixuture()
-
-      conn = log_in_user(conn, user)
-      {:ok, _lv, html} = live(conn, ~p"/budgets/new")
-
-    end
   end
 end

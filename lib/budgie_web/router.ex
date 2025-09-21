@@ -55,7 +55,7 @@ defmodule BudgieWeb.Router do
       live "/budgets", BudgetListLive
       live "/budgets/new", BudgetListLive, :new
       live "/budgets/:budget_id", BudgetShowLive, :budget_show
-      live "/budgets/:budget_id/new-transaction", BudgetShowLive, :new_transaction
+      live "/budgets/:budget_id/new", BudgetShowLive, :new_transaction
 
       live "/budgets/:budget_id/transactions/:transaction_id/edit",
            BudgetShowLive,

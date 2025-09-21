@@ -14,8 +14,12 @@ defmodule BudgieWeb.BudgetShowLive do
     if budget do
       transactions = Tracking.list_transactions(budget)
       summary = Tracking.summarize_budget_transactions(budget)
-      summary = %{spending: Map.get(summary, :spending, Decimal.new("0.0")),
-                 funding: Map.get(summary, :funding, Decimal.new("0.0"))}
+
+      summary = %{
+        spending: Map.get(summary, :spending, Decimal.new("0.0")),
+        funding: Map.get(summary, :funding, Decimal.new("0.0"))
+      }
+
       {:ok,
        assign(socket,
          budget: budget,
@@ -48,7 +52,6 @@ defmodule BudgieWeb.BudgetShowLive do
   def apply_action(%{assigns: %{live_action: :edit_transaction}} = socket, %{
         "transaction_id" => transaction_id
       }) do
-    IO.inspect(transaction_id, label: :valid_tx)
     transaction = Enum.find(socket.assigns.transactions, &(&1.id == transaction_id))
 
     if transaction do
@@ -61,9 +64,7 @@ defmodule BudgieWeb.BudgetShowLive do
     end
   end
 
-  def apply_action(%{assigns: %{live_action: live_action}} = socket, other) do
-    IO.inspect(other, label: :other_action)
-    IO.inspect(live_action, label: :other_live_action)
+  def apply_action(%{assigns: %{live_action: _live_action}} = socket, _other) do
     socket
   end
 
