@@ -178,32 +178,32 @@ defmodule BudgieWeb.CoreComponents do
     |> input()
   end
 
-  def input(%{type: "checkbox"} = assigns) do
-    assigns =
-      assign_new(assigns, :checked, fn ->
-        Phoenix.HTML.Form.normalize_value("checkbox", assigns[:value])
-      end)
+  # def input(%{type: "checkbox"} = assigns) do
+  #   assigns =
+  #     assign_new(assigns, :checked, fn ->
+  #       Phoenix.HTML.Form.normalize_value("checkbox", assigns[:value])
+  #     end)
 
-    ~H"""
-    <div class="fieldset mb-2">
-      <label>
-        <input type="hidden" name={@name} value="false" disabled={@rest[:disabled]} />
-        <span class="label">
-          <input
-            type="checkbox"
-            id={@id}
-            name={@name}
-            value="true"
-            checked={@checked}
-            class={@class || "checkbox checkbox-sm"}
-            {@rest}
-          />{@label}
-        </span>
-      </label>
-      <.error :for={msg <- @errors}>{msg}</.error>
-    </div>
-    """
-  end
+  #   ~H"""
+  #   <div class="fieldset mb-2">
+  #     <label>
+  #       <input type="hidden" name={@name} value="false" disabled={@rest[:disabled]} />
+  #       <span class="label">
+  #         <input
+  #           type="checkbox"
+  #           id={@id}
+  #           name={@name}
+  #           value="true"
+  #           checked={@checked}
+  #           class={@class || "checkbox checkbox-sm"}
+  #           {@rest}
+  #         />{@label}
+  #       </span>
+  #     </label>
+  #     <.error :for={msg <- @errors}>{msg}</.error>
+  #   </div>
+  #   """
+  # end
 
   def input(%{type: "select"} = assigns) do
     ~H"""
@@ -226,25 +226,25 @@ defmodule BudgieWeb.CoreComponents do
     """
   end
 
-  def input(%{type: "textarea"} = assigns) do
-    ~H"""
-    <div class="fieldset mb-2">
-      <label>
-        <span :if={@label} class="label mb-1">{@label}</span>
-        <textarea
-          id={@id}
-          name={@name}
-          class={[
-            @class || "w-full textarea",
-            @errors != [] && (@error_class || "textarea-error")
-          ]}
-          {@rest}
-        >{Phoenix.HTML.Form.normalize_value("textarea", @value)}</textarea>
-      </label>
-      <.error :for={msg <- @errors}>{msg}</.error>
-    </div>
-    """
-  end
+  # def input(%{type: "textarea"} = assigns) do
+  #   ~H"""
+  #   <div class="fieldset mb-2">
+  #     <label>
+  #       <span :if={@label} class="label mb-1">{@label}</span>
+  #       <textarea
+  #         id={@id}
+  #         name={@name}
+  #         class={[
+  #           @class || "w-full textarea",
+  #           @errors != [] && (@error_class || "textarea-error")
+  #         ]}
+  #         {@rest}
+  #       >{Phoenix.HTML.Form.normalize_value("textarea", @value)}</textarea>
+  #     </label>
+  #     <.error :for={msg <- @errors}>{msg}</.error>
+  #   </div>
+  #   """
+  # end
 
   # All other inputs text, datetime-local, url, password, etc. are handled here...
   def input(assigns) do
@@ -365,32 +365,32 @@ defmodule BudgieWeb.CoreComponents do
     """
   end
 
-  @doc """
-  Renders a data list.
+  # @doc """
+  # Renders a data list.
 
-  ## Examples
+  # ## Examples
 
-      <.list>
-        <:item title="Title">{@post.title}</:item>
-        <:item title="Views">{@post.views}</:item>
-      </.list>
-  """
-  slot :item, required: true do
-    attr :title, :string, required: true
-  end
+  #     <.list>
+  #       <:item title="Title">{@post.title}</:item>
+  #       <:item title="Views">{@post.views}</:item>
+  #     </.list>
+  # """
+  # slot :item, required: true do
+  #   attr :title, :string, required: true
+  # end
 
-  def list(assigns) do
-    ~H"""
-    <ul class="list">
-      <li :for={item <- @item} class="list-row">
-        <div class="list-col-grow">
-          <div class="font-bold">{item.title}</div>
-          <div>{render_slot(item)}</div>
-        </div>
-      </li>
-    </ul>
-    """
-  end
+  # def list(assigns) do
+  #   ~H"""
+  #   <ul class="list">
+  #     <li :for={item <- @item} class="list-row">
+  #       <div class="list-col-grow">
+  #         <div class="font-bold">{item.title}</div>
+  #         <div>{render_slot(item)}</div>
+  #       </div>
+  #     </li>
+  #   </ul>
+  #   """
+  # end
 
   @doc """
   Renders a [Heroicon](https://heroicons.com).
@@ -466,7 +466,7 @@ defmodule BudgieWeb.CoreComponents do
   @doc """
   Translates the errors for a field from a keyword list of errors.
   """
-  def translate_errors(errors, field) when is_list(errors) do
-    for {^field, {msg, opts}} <- errors, do: translate_error({msg, opts})
-  end
+  # def translate_errors(errors, field) when is_list(errors) do
+  #   for {^field, {msg, opts}} <- errors, do: translate_error({msg, opts})
+  # end
 end
